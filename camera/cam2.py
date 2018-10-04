@@ -29,7 +29,7 @@ while True:
 	timerConstant = 1 # amount of seconds per 'tick'
 	if timer == 0:
 
-		if averageGraySpace(gray) > 100: #light is abundantly present
+		if averageGraySpace(gray) > 100: #if light is abundantly present
 			faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
 			if len(faces) == 0 or len(faces) > 1:
