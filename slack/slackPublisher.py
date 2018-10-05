@@ -1,8 +1,8 @@
 from slackclient import SlackClient
 
-class publisher:
+class Spublisher:
 	def __init__(self):
-		slackTokenFile = open("token", "r")
+		slackTokenFile = open("slack/token", "r")
 		slackToken = slackTokenFile.read()
 		self.client = SlackClient(slackToken)
 

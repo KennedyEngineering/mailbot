@@ -3,13 +3,13 @@ from apiclient.http import MediaFileUpload
 from httplib2 import Http
 from oauth2client import file, client, tools
 
-class publisher():
+class Gpublisher():
 	def __init__(self):
 		scope = 'https://www.googleapis.com/auth/drive'
-		store = file.Storage('storage.json')
+		store = file.Storage('gdrive/storage.json')
 		credentials = store.get()
 		if not credentials or credentials.invalid:
-			flow = client.flow_from_clientsecrets('credentials.json', scope)
+			flow = client.flow_from_clientsecrets('gdrive/credentials.json', scope)
 			credentials = tools.run_flow(flow, store)
 		self.gdrive = discovery.build('drive', 'v3', http=credentials.authorize(Http()))
 
