@@ -1,14 +1,21 @@
 import cv2
 import numpy as np
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 class Camera():
 	def __init__(self):
-		self.cap = cv2.VideoCapture(0)
-		self.cap.set(3, 640)
-		self.cap.set(4, 480)
+                print("initializing camera...")
+
+		self.cap = PiCamera()
+		self.cap.resolution = (640, 480)
+		self.framerate = 60
+		self.rawCapture = PiRGBArray(self.cap, size=(640, 480))
 
 		self.faceCascade = cv2.CascadeClassifier('camera/haarcascade_frontalface_default.xml')
 
+                print("done")
+    
 	def averageGraySpace(self, grayFrame):
 		rows=[]
 		for row in grayFrame:
@@ -23,21 +30,11 @@ class Camera():
 		return tavg
 
 	def getFrame(self):
-		ret, frame = self.cap.read()
+		self.cap.capture(self.rawCapture, format="bgr")
+		frame = self.rawCapture.array
+		self.rawCapture.truncate(0)		
 
-		if ret:
-			return frame
-		else:
-			return 0
-
-	def getGray(self):
-		ret, frame = self.cap.read()
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-		
-		if ret:
-			return gray
-		else:
-			return 0
+		return frame
 
 	def convertGray(self, frame):
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -60,4 +57,4 @@ class Camera():
 		cv2.imwrite(name, frame)
                 
 	def __del__(self):
-		self.cap.release()
+		self.cap.close()
