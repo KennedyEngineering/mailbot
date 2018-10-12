@@ -1,3 +1,3 @@
 # mailbot
 Mailbox camera code for Raspberry Pi
-hahaf
+By Braedan Kennedy
