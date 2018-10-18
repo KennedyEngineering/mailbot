@@ -18,6 +18,7 @@ try:
     print("done")
 except:
     print("error initializing modules")
+    exit()
 
 timer = 0
 timerConstant = 1
@@ -33,27 +34,38 @@ def Upload(frame):
     slack.post(URL)                                         #post message to slack
     
     os.remove(imagePath)                                    #remove frame from disk
+
+    print("uploaded image")
     
+print("starting main loop")
+
 while True:
-    frame = camera.getFrame()                               #get frame from camera
-    gray = camera.convertGray(frame)                        #convert to grayscale
+    try:
+        frame = camera.getFrame()                               #get frame from camera
+        gray = camera.convertGray(frame)                        #convert to grayscale
 
-    if timer == 0:
-        if camera.averageGraySpace(gray) > 100:             #detect if door is open
-            faces = camera.getFaces(gray)                   #detect faces in frame
-
-            if len(faces) == 0 or len(faces) > 1:           #only continue with good data
-                pass
+        if timer == 0:
+            if camera.averageGraySpace(gray) > 100:             #detect if door is open
+                print("searching for faces...")
+                faces = camera.getFaces(gray)                   #detect faces in frame
+                
+                if len(faces) == 0 or len(faces) > 1:           #only continue with good data
+                    print("no face found")
+                else:
+                    print("face found")
+                    frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
+                    print("uploading image")
+                    Upload(frame)                               #upload image to the internet
+                    timer = 60                                  #wait 60 seconds before attempting to find another face
+                    print("delay", timer, " seconds")
             else:
-                frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
-                Upload(frame)                               #upload image to the internet
-                timer = 60                                  #wait 60 seconds before attempting to find another face
+                timer = 1
 
         else:
-            timer = 1
+            time.sleep(timerConstant)
+            timer-=1
 
-    else:
-        time.sleep(timerConstant)
-        timer-=1
-
+    except KeyboardInterrupt:
+        print("stopping MailBot")
+        break
 exit()
