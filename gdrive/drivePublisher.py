@@ -4,7 +4,7 @@ from httplib2 import Http
 from oauth2client import file, client, tools
 
 class Gpublisher():
-        def __init__(self):
+        def __init__(self):                                                                             #setup Google Drive API with full authorization
                 print("initializing Google Drive...")
 
                 scope = 'https://www.googleapis.com/auth/drive'
@@ -17,7 +17,7 @@ class Gpublisher():
 
                 print("done")
 
-        def upload(self, imagePath, folderID='16gFypOom7AEcIwuH50Bnt2TjLWx1JZPE'):
+        def upload(self, imagePath, folderID='16gFypOom7AEcIwuH50Bnt2TjLWx1JZPE'):                      #upload image from disk to MailBot folder in Google Drive
                 fileMetadata = {
                         'name': [imagePath],
                         'parents': [folderID]

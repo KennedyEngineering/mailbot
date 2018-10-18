@@ -1,7 +1,7 @@
 from slackclient import SlackClient
 
 class Spublisher:
-        def __init__(self):
+        def __init__(self):                                                             #setup Slack API to connect to MailBot slackbot
                 print("initializing Slack API...")
 
                 slackTokenFile = open("slack/token", "r")
@@ -10,7 +10,7 @@ class Spublisher:
 
                 print("done")
 
-        def post(self, url, location="mailbot", message="mail!", name="photo"):
+        def post(self, url, location="mailbot", message="mail!", name="photo"):         #post image from public URL to mailbot channel on slack
                 self.client.api_call(
                         "chat.postMessage",
                         channel=location,
