@@ -5,7 +5,7 @@ from picamera import PiCamera
 
 class Camera():
         def __init__(self):
-                print("initializing camera...")
+                print("initializing Pi Camera...")
 
                 self.cap = PiCamera()
                 self.cap.resolution = (640, 480)
@@ -30,7 +30,7 @@ class Camera():
                 return tavg
 
         def getFrame(self):
-                self.cap.capture(self.rawCapture, format="bgr")
+                self.cap.capture(self.rawCapture, format="bgr", use_video_port=True)
                 frame = self.rawCapture.array
                 self.rawCapture.truncate(0)		
 
@@ -57,4 +57,5 @@ class Camera():
                 cv2.imwrite(name, frame)
                 
         def __del__(self):
-                self.cap.close()
+                #self.cap.close() 
+                pass

@@ -6,8 +6,9 @@ try:
     import time
     import os
     print("done")
-except:
+except Exception as e:
     print("error importing modules")
+    print(e)
     exit()
 
 try:
@@ -16,8 +17,9 @@ try:
     slack = Spublisher()
     drive = Gpublisher()
     print("done")
-except:
+except Exception as e:
     print("error initializing modules")
+    print(e)
     exit()
 
 timer = 0
@@ -44,7 +46,7 @@ while True:
         frame = camera.getFrame()                               #get frame from camera
         gray = camera.convertGray(frame)                        #convert to grayscale
 
-        if timer == 0:
+        if timer <= 0:
             if camera.averageGraySpace(gray) > 100:             #detect if door is open
                 print("searching for faces...")
                 faces = camera.getFaces(gray)                   #detect faces in frame
@@ -67,5 +69,9 @@ while True:
 
     except KeyboardInterrupt:
         print("stopping MailBot")
+        break
+    except Exception as e:
+        print("error")
+        print(e)
         break
 exit()
