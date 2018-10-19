@@ -9,7 +9,8 @@ class Camera():
 
                 self.cap = PiCamera()
                 self.cap.resolution = (640, 480)
-                self.framerate = 60
+                self.cap.rotation = 90
+                self.cap.framerate = 60
                 self.rawCapture = PiRGBArray(self.cap, size=(640, 480))
 
                 self.faceCascade = cv2.CascadeClassifier('camera/haarcascade_frontalface_default.xml')
