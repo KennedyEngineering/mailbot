@@ -43,25 +43,57 @@ def Upload(frame):
 print("starting main loop")
 timer = 0
 timerConstant = 1
+isOpen = False
+doorState1 = False
+doorState2 = False
+openFrames=[]
+startDetection = False
+faceDetected = False
 while True:
     try:
         frame = camera.getFrame()                               #get frame from camera
         gray = camera.convertGray(frame)                        #convert to grayscale
         
         if timer <= 0:
-            if camera.averageGraySpace(gray) > 100:             #detect if door is open
-                print("searching for faces...")
-                faces = camera.getFaces(gray)                   #detect faces in frame
+            average = camera.averageGraySpace(gray)
+            if average > 30:                                      #detect if door is open
+                doorState1 = True
+                openFrames.append(gray)
+            else:
+                doorState1 = False
+
+            if doorState2 == doorState1 and doorState2 == True:
+                isOpen = True
+            elif doorState2 == doorState1 and doorState2 == False:
+                if isOpen == True:
+                    startDetection = True
+
+                isOpen = False
+
+            if startDetection == True:
+                for f in openFrames:
+
+                    print("searching for faces...")
+                    faces = camera.getFaces(f)                      #detect faces in frame
                 
-                if len(faces) == 0 or len(faces) > 1:           #only continue with good data
-                    print("no face found")
-                else:
-                    print("face found")
-                    frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
-                    print("uploading image")
-                    Upload(frame)                               #upload image to the internet
-                    timer = 30                                  #wait 60 seconds before attempting to find another face
-                    print("delay", timer, " seconds")
+                    if len(faces) == 0 or len(faces) > 1:           #only continue with good data
+                        print("no face found")
+                    else:
+                        print("face found")
+                        frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
+                        print("uploading image")
+                        Upload(frame)                               #upload image to the internet
+                        timer = 30                                  #wait 60 seconds before attempting to find another face
+                        print("delay", timer, " seconds")
+                        faceDetected = True
+                        break
+
+                if faceDetected == False:
+                    median = int(len(openFrames)/2)
+                    Upload(openFrames[median])
+
+                startDetection = False
+            doorState2 = doorState1
             else:
                 timer = 0
 
