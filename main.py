@@ -47,7 +47,7 @@ while True:
     try:
         frame = camera.getFrame()                               #get frame from camera
         gray = camera.convertGray(frame)                        #convert to grayscale
-        print("got frame", len(frame))
+        
         if timer <= 0:
             if camera.averageGraySpace(gray) > 100:             #detect if door is open
                 print("searching for faces...")
@@ -60,7 +60,7 @@ while True:
                     frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
                     print("uploading image")
                     Upload(frame)                               #upload image to the internet
-                    timer = 0                                  #wait 60 seconds before attempting to find another face
+                    timer = 30                                  #wait 60 seconds before attempting to find another face
                     print("delay", timer, " seconds")
             else:
                 timer = 0
