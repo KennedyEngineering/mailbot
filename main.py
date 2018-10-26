@@ -22,8 +22,9 @@ except Exception as e:
     print(e)
     exit()
 
-timer = 0
-timerConstant = 1
+def closeAll():
+    print("stopping MailBot")
+    exit()
 
 def Upload(frame):
     imagePath = "camera/image/image.jpg"                    #location for temporary image storage   
@@ -40,12 +41,13 @@ def Upload(frame):
     print("uploaded image")
     
 print("starting main loop")
-
+timer = 0
+timerConstant = 1
 while True:
     try:
         frame = camera.getFrame()                               #get frame from camera
         gray = camera.convertGray(frame)                        #convert to grayscale
-
+        print("got frame", len(frame))
         if timer <= 0:
             if camera.averageGraySpace(gray) > 100:             #detect if door is open
                 print("searching for faces...")
@@ -58,20 +60,20 @@ while True:
                     frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
                     print("uploading image")
                     Upload(frame)                               #upload image to the internet
-                    timer = 60                                  #wait 60 seconds before attempting to find another face
+                    timer = 0                                  #wait 60 seconds before attempting to find another face
                     print("delay", timer, " seconds")
             else:
-                timer = 1
+                timer = 0
 
         else:
             time.sleep(timerConstant)
             timer-=1
 
     except KeyboardInterrupt:
-        print("stopping MailBot")
+        print("keyboard interrupt")
         break
     except Exception as e:
         print("error")
         print(e)
         break
-exit()
+closeAll()

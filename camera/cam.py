@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+from threading import Thread
 
 class Camera():
         def __init__(self):                                                                                     #setup Pi Camera and haarcascade classifier
@@ -10,13 +11,28 @@ class Camera():
                 self.cap = PiCamera()
                 self.cap.resolution = (640, 480)
                 self.cap.rotation = 90
-                self.cap.framerate = 60
+                self.cap.framerate = 30
+                self.cap.led = False
                 self.rawCapture = PiRGBArray(self.cap, size=(640, 480))
+
+                self.frame = None
+                self.captureThread = Thread(target=self.__captureFrame)
+                self.captureThread.daemon = True
+                self.captureThread.do_run = True
+                self.captureThread.start()
 
                 self.faceCascade = cv2.CascadeClassifier('camera/haarcascade_frontalface_default.xml')
 
                 print("done")
     
+        def __captureFrame(self):
+            for capture in self.cap.capture_continuous(self.rawCapture, format='bgr', use_video_port=True):
+                self.frame = capture.array
+                self.rawCapture.truncate(0)
+
+                if (self.captureThread.do_run == False):
+                    break
+
         def averageGraySpace(self, grayFrame):                                                                  #calculate average light level from frame in gray space
                 rows=[]
                 for row in grayFrame:
@@ -31,11 +47,7 @@ class Camera():
                 return tavg
 
         def getFrame(self):                                                                                     #retreive frame from camera as an array
-                self.cap.capture(self.rawCapture, format="bgr", use_video_port=True)
-                frame = self.rawCapture.array
-                self.rawCapture.truncate(0)		
-
-                return frame
+                return self.frame
 
         def convertGray(self, frame):                                                                           #convert frame array to gray space
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -58,5 +70,8 @@ class Camera():
                 cv2.imwrite(name, frame)
                 
         def __del__(self):
-                #self.cap.close() 
-                pass
+                print("stopping Pi Camera...")
+                self.captureThread.do_run = False
+                self.captureThread.join()
+                self.cap.close()
+                print("done")

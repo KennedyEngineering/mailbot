@@ -16,3 +16,7 @@ class Spublisher:
                         channel=location,
                         text=message,
                         attachments=[{"title":name, "image_url":url}])
+
+        def __del__(self):
+            print("stopping Slack API...")
+            print("done")

@@ -29,3 +29,7 @@ class Gpublisher():
                                         media_body=media,
                                         fields='id').execute()
                 return file.get('id')
+
+        def __del__(self):
+            print("stopping Google Drive...")
+            print("done")
