@@ -85,9 +85,9 @@ while True:
 
                     else:
                         print("face found")
-                        frame = camera.highlightFace(frame, faces)  #draw rectangle around detected face
+                        f = camera.highlightFace(f, faces)  #draw rectangle around detected face
                         print("uploading image")
-                        Upload(frame)                               #upload image to the internet
+                        Upload(f)                               #upload image to the internet
                         timer = 30                                  #wait 30 seconds before attempting to find another face
                         print("delay", timer, " seconds")
                         faceDetected = True
