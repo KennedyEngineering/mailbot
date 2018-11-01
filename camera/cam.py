@@ -34,17 +34,8 @@ class Camera():
                     break
 
         def averageGraySpace(self, grayFrame):                                                                  #calculate average light level from frame in gray space
-                rows=[]
-                for row in grayFrame:
-                        rowavg = cv2.mean(grayFrame[row])
-                        rows.append(rowavg)
-                avgs=[]
-                for avg in rows:
-                        avgs.append(avg[0])
-		
-                tavg = sum(avgs)/len(avgs)
-
-                return tavg
+                average = np.mean(grayFrame.flatten())
+                return average
 
         def getFrame(self):                                                                                     #retreive frame from camera as an array
                 return self.frame
