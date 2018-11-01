@@ -17,9 +17,9 @@ class Gpublisher():
 
                 print("done")
 
-        def upload(self, imagePath, folderID='16gFypOom7AEcIwuH50Bnt2TjLWx1JZPE'):                      #upload image from disk to MailBot folder in Google Drive
+        def upload(self, imagePath, imageName="photo", folderID='16gFypOom7AEcIwuH50Bnt2TjLWx1JZPE'):                      #upload image from disk to MailBot folder in Google Drive
                 fileMetadata = {
-                        'name': [imagePath],
+                        'name': [imageName],
                         'parents': [folderID]
                 }
                 media = MediaFileUpload(imagePath,

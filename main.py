@@ -5,6 +5,7 @@ try:
     from camera.cam import Camera
     import time
     import os
+    import datetime
     print("done")
 except Exception as e:
     print("error importing modules")
@@ -26,15 +27,19 @@ def closeAll():
     print("stopping MailBot")
     exit()
 
-def Upload(frame):
+def Upload(frame, face):
     imagePath = "camera/image/image.jpg"                    #location for temporary image storage   
-    
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
     camera.saveFrame(frame, imagePath)                      #save frame to disk
     
-    fileID = drive.upload(imagePath)                        #upload frame to gdrive
+    fileID = drive.upload(imagePath, date)                  #upload frame to gdrive
     
     URL = "https://drive.google.com/uc?id=" + str(fileID)   #convert fileID into embeddable URL
-    slack.post(URL)                                         #post message to slack
+    if face:
+        slack.post(URL, message="Face Found!", name=date)              #post message to slack
+    else:
+        slack.post(URL, message="No Face Found...", name=date)
     
     os.remove(imagePath)                                    #remove frame from disk
 
@@ -62,6 +67,7 @@ while True:
             if average > 100:                                      #detect if door is open
                 doorState1 = True
                 openFrames.append(frame)
+
             else:
                 doorState1 = False
 
@@ -87,7 +93,7 @@ while True:
                         print("face found")
                         f = camera.highlightFace(f, faces)  #draw rectangle around detected face
                         print("uploading image")
-                        Upload(f)                               #upload image to the internet
+                        Upload(f, True)                               #upload image to the internet
                         timer = 30                                  #wait 30 seconds before attempting to find another face
                         print("delay", timer, " seconds")
                         faceDetected = True
@@ -97,7 +103,7 @@ while True:
                     print("no face found")
                     median = int(len(openFrames)/2)
                     print("uploading image")
-                    Upload(openFrames[median])
+                    Upload(openFrames[median], False)
                     timer = 30
                     print("delay", timer, " seconds")
 
