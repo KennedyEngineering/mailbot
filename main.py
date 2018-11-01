@@ -61,7 +61,7 @@ while True:
 
             if average > 100:                                      #detect if door is open
                 doorState1 = True
-                openFrames.append(gray)
+                openFrames.append(frame)
             else:
                 doorState1 = False
 
@@ -76,9 +76,9 @@ while True:
 
             if startDetection == True:
                 for f in openFrames:
-
                     print("searching for faces...")
-                    faces = camera.getFaces(f)                      #detect faces in frame
+                    g = camera.convertGray(f)
+                    faces = camera.getFaces(g)                      #detect faces in frame
                 
                     if len(faces) == 0 or len(faces) > 1:           #only continue with good data
                         pass
