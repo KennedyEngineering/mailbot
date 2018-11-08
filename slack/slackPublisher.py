@@ -1,12 +1,12 @@
 from slackclient import SlackClient
 
-class Spublisher:
+class Spublisher:                                                                       #Slack API object
         def __init__(self):                                                             #setup Slack API to connect to MailBot slackbot
                 print("initializing Slack API...")
 
-                slackTokenFile = open("slack/token", "r")
+                slackTokenFile = open("slack/token", "r")                               #use token for auth
                 slackToken = slackTokenFile.read()
-                self.client = SlackClient(slackToken)
+                self.client = SlackClient(slackToken)                                   #create client
 
                 print("done")
 
@@ -17,6 +17,6 @@ class Spublisher:
                         text=message,
                         attachments=[{"title":name, "image_url":url}])
 
-        def __del__(self):
+        def __del__(self):                                                              #close safely
             print("stopping Slack API...")
             print("done")
