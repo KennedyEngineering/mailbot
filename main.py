@@ -4,6 +4,8 @@ try:                                                                    #import 
     from slack.slackPublisher import Spublisher
     from camera.cam import Camera
     import datetime
+    import os
+    import time
     print("done")
 except Exception as e:                                                  #handle import errors
     print("error importing modules")
