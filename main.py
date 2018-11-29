@@ -36,10 +36,10 @@ def Upload(frame, face):                                                #upload 
     fileID = drive.upload(imagePath, date)                              #upload frame to gdrive
     
     URL = "https://drive.google.com/uc?id=" + str(fileID)               #convert gdrive fileID into embeddable URL
-    if face:
-        slack.post(URL, message="Face Found!", name=date)               #post message to slack
+    if face:                                                            #post image to slack using URL
+        slack.post(URL, message="Mail-Person Spotted! Face Found!", name=date)
     else:
-        slack.post(URL, message="No Face Found...", name=date)
+        slack.post(URL, message="Mail-Person Spotted!", name=date)
     
     os.remove(imagePath)                                                #remove frame from disk
 
@@ -56,6 +56,7 @@ doorState2 = False                                                      #previou
 openFrames=[]                                                           #frame buffer for all frames captured while door is open
 startDetection = False                                                  
 faceDetected = False
+faceFrames=[]
 
 while True:                                                             #main loop
     try:
@@ -93,12 +94,8 @@ while True:                                                             #main lo
                     else:                                          
                         print("face found")
                         f = camera.highlightFace(f, faces)              #draw rectangle around detected face
-                        print("uploading image")
-                        Upload(f, True)                                 #upload image to the internet
-                        timer = 30                                      #wait 30 seconds before attempting to capture again
-                        print("delay", timer, " seconds")
+                        faceFrames.append(f)                                 #record detected face frame
                         faceDetected = True
-                        break
 
                 if faceDetected == False:                               #if no faces are found upload anyways
                     print("no face found")
@@ -107,7 +104,14 @@ while True:                                                             #main lo
                     Upload(openFrames[median], False)                   #upload image to the internet
                     timer = 30                                          #wait 30 seconds before attempting to capture again
                     print("delay", timer, " seconds")
+                else:
+                    median = int(len(faceFrames)/2)
+                    print("uploading image")
+                    Upload(faceFrames[median], True)                         #upload image to the internet
+                    timer = 30                                          #wait 30 seconds before attempting to capture again
+                    print("delay", timer, " seconds")
 
+                faces=[]
                 openFrames=[]                                           #clear frame buffer
                 faceDetected = False                                    #reset detection variables
                 startDetection = False
